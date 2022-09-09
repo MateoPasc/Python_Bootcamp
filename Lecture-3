@@ -1,0 +1,255 @@
+
+
+file_name = "data.txt"
+
+data_list = []
+
+with open(file_name) as f:
+
+    # Skips a line (the header)
+    next(f)
+
+    for line in f:
+        
+        # Remove the newline character
+        line = line.replace('\n', '')
+
+        # Split the line into a list
+        line = line.split(',')
+
+        # Parse a line
+        num = line[0]
+        name = line[1].strip()
+        epoch = int(line[2])
+        elements = list(map(float, line[3:9]))
+        ref = line[9]
+
+        # Append the elements of the line to our data list
+        data_list.append([num, name, epoch, elements, ref])
+
+        print(num, name, epoch, elements, ref)
+
+print()
+
+print(data_list)
+
+print()
+
+# Wile E. Coyote rewrites history...
+for line in data_list:
+    line[1] = 'Coyote'
+
+print(data_list)
+
+
+#######################################
+
+## STRING FORMATTING
+
+# Converting floats to strings
+x = 3.14159
+
+print("{:4.2f}".format(x))
+
+# Signed formatting
+print("{:+5.2f}".format(x))
+
+# Zero padding
+print("{:06.2f}".format(x))
+
+# More decimal places
+print("{:7.5f}".format(x))
+
+# More zeros after decimal precision
+y = 2.71
+print("{:7.5f}".format(y))
+print("{:7.2f}".format(y))
+
+# NOTE: these are now string, not numbers. Can be written on a file but can't be used for calculations.
+
+# Store formatted string
+y_str = "{:7.5f}".format(y)
+print(y_str)
+
+# Integers
+z = 42
+print("{:7d}".format(z))
+
+# String
+print("{:10}".format("Wile E."))
+
+# Align to the right
+print("{:>10}".format("Wile E."))
+
+# Named arguments
+print("{a},{b},{c}".format(a=5, b=8, c=10))
+
+print("{:7.5f},{:7.3f},{:5.2f}".format(3.14, 2.71, 42))
+
+#######################################
+
+#  Writing files
+
+new_file_name = 'true_data.txt'
+
+with open(new_file_name, 'w') as f:
+
+    # Write the header
+    f.write("Num,Name,Epoch,q,e,i,w,Node,Tp,Ref\n")
+
+    for line in data_list:
+
+        # Composing a string
+        str_line = ["{:>3}".format(line[0]), line[1], "{:5d}".format(line[2])]
+
+        # Convert all orbital elements using the same format
+        for element in line[3]:
+            str_line.append("{:.3f}".format(element))
+
+        # Add the reference
+        str_line.append(line[-1])
+
+        # Convert the list to a comma delimited string
+        final_line = ",".join(str_line)
+
+        # Write the line
+        f.write(final_line + "\n")
+
+# Appending to a file - mode 'a'
+with open(new_file_name, 'a') as f:
+    f.write("Wile E. was here.")
+
+
+#######################################
+
+## PYTHON MODULES
+
+import math
+
+print(math.sqrt(2))
+
+# math.pi gives you pi to full precision. However, due to precision limit, sin(pi) does not give you exactly zero:
+print(math.sin(math.pi))
+
+print(math.log10(100))
+
+################
+import random
+
+#  Get a random integer
+print(random.randint(1,100))
+
+# Random float between 0 and 1
+print(random.random())
+
+a = [1, 2, 3, 4, 5]
+random.shuffle(a)
+print(a)
+
+# Sample 10 elements from a list
+b = range(1,100)
+print(random.sample(b,10))
+
+# Sampling the Gaussian distribution - random.gauss('mean', 'std. dev.')
+print(random.gauss(0, 2))
+
+#######################################
+# Ways of importing modules
+
+# Module alias
+import math as m
+
+print(m.sqrt(2))
+
+# Importing individual functions
+from math import sqrt
+print(sqrt(2))
+
+# # Importing all functions from a module - BAD IDEA
+# from math import *
+# print(sqrt(2))
+# print(pi)
+# print(log10(10000))
+
+#######################################
+
+# FILE MANAGEMENT
+
+import os
+
+# List contents of a directory
+print(os.listdir('.'))
+
+# Print current directory
+print(os.getcwd())
+
+# Changing the curent directory one up
+os.chdir("..")
+print(os.getcwd())
+
+# Changing directory
+os.chdir(os.getcwd()+'/9505Q_Python_Bootcamp')
+
+# Directory spearation - different in mac and windows
+print(os.sep)
+
+# Making a new directory
+# Construct a path to the new dir
+new_dir_path = os.path.join(os.getcwd(), 'test')
+print(new_dir_path)
+
+# Make a new dir
+if not os.path.exists(new_dir_path):
+    os.mkdir(new_dir_path)
+    print("New directory created.")
+else:
+    print("The directory already exists.")
+
+# Remove empty directory
+if os.path.exists(new_dir_path):
+    os.rmdir(new_dir_path)
+    print("Test directory removed.")
+
+#######################################
+# snake_case - variables
+# camelCase - functions
+# CamelCase - classes
+# UPPERCASE - constants
+
+# File copying and moving
+
+import shutil
+
+file_path = 'Topsecret.txt'
+
+if os.path.exists(file_path):
+    print("Topsecret.txt does exist")
+else:
+    print("Topsecret.txt does NOT exist")
+
+# Make example file
+with open(file_path, 'w') as f:
+    f.write("This is a secret.")
+
+# Check the file has been created
+if os.path.exists(file_path):
+    print("Topsecret.txt does exist")
+else:
+    print("Topsecret.txt does NOT exist")
+
+shutil.copy(file_path, "Topsecret_copy.txt")    # Copies content of file only
+
+shutil.copy2(file_path, "Topsecret_copy2.txt")  # Copies metadata of file too
+
+shutil.move(file_path, "Topsecret_move.txt")    # Moves/renames file, and deletes original
+
+# Check the file has been moved, and deleted
+if os.path.exists(file_path):
+    print("Topsecret.txt does exist")
+else:
+    print("Topsecret.txt does NOT exist")
+
+
+# Q1 ?
+# Q2 ? 
+# Q3 Combine loops, ifs, library modules
